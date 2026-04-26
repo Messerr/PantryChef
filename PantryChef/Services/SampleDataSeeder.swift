@@ -17,7 +17,7 @@ struct SampleDataSeeder {
         
         let pancakes = Recipe(
             title: "Fluffy Pancakes",
-            summary: "Clasics buttermilk pancakes",
+            summary: "Classic buttermilk pancakes",
             servings: 4, prepMinutes: 10, cookMinutes: 15,
             category: .breakfast
         )

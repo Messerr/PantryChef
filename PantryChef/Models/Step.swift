@@ -19,7 +19,7 @@ final class Step {
     
     init(
         instruction: String,
-        durationSeconds: Int? = 0,
+        durationSeconds: Int? = nil,
         sortIndex: Int,
         recipe: Recipe? = nil
     ) {

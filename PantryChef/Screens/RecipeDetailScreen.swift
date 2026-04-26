@@ -15,6 +15,7 @@ struct RecipeDetailScreen: View {
     @State private var adjustedServings: Int
     @State private var showingEditScreen = false
     @State private var showCookingMode = false
+    @State private var showDeleteConfirm = false
     
     init(recipe: Recipe) {
         self.recipe = recipe
@@ -91,8 +92,7 @@ struct RecipeDetailScreen: View {
             }
             ToolbarItem(placement: .destructiveAction) {
                 Button("Delete") {
-                    context.delete(recipe)
-                    dismiss()
+                    showDeleteConfirm = true
                 }
             }
             ToolbarItem {
@@ -104,6 +104,15 @@ struct RecipeDetailScreen: View {
         }
         .fullScreenCover(isPresented: $showCookingMode) {
             CookingModeView(recipe: recipe)
+        }
+        .alert("Delete \(recipe.title)?", isPresented: $showDeleteConfirm) {
+            Button("Delete Recipe", role: .destructive) {
+                context.delete(recipe)
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This will remove the recipe and all its ingredients and steps.")
         }
     }
 }
