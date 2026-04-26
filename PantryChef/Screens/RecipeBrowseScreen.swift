@@ -35,16 +35,42 @@ struct RecipeBrowseScreen: View {
         ScrollView {
             CategoryFilterBar(selected: $selectedCategories)
             
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 170), spacing: 16)], spacing: 16) {
-                ForEach(filteredRecipes) { recipe in
-                    NavigationLink(value: recipe) {
-                        RecipeCard(recipe: recipe)
+            if filteredRecipes.isEmpty {
+                if recipes.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Recipes Yet", systemImage: "book.closed")
+                    } description: {
+                        Text("Tap + to add your first recipe.")
                     }
-                    .buttonStyle(.plain)
+                } else if !searchText.isEmpty {
+                    ContentUnavailableView {
+                        Label("No Results", systemImage: "magnifyingglass")
+                    } description: {
+                        Text("No recipes match \"\(searchText)\"")
+                    } actions: {
+                        Button("Clear Search") { searchText = "" }
+                    }
+                } else {
+                    ContentUnavailableView {
+                        Label("No Matches", systemImage: "line.3.horizontal.decrease.circle")
+                    } description: {
+                        Text("No recipes match the selected filters.")
+                    } actions: {
+                        Button("Clear Filters") { selectedCategories = [] }
+                    }
                 }
+            } else {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 170), spacing: 16)], spacing: 16) {
+                    ForEach(filteredRecipes) { recipe in
+                        NavigationLink(value: recipe) {
+                            RecipeCard(recipe: recipe)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding()
+                .animation(.spring(duration: 0.4), value: filteredRecipes.map(\.id))
             }
-            .padding()
-            .animation(.spring(duration: 0.4), value: filteredRecipes.map(\.id))
         }
         .searchable(text: $searchText, prompt: "Search recipes...")
         .searchSuggestions {

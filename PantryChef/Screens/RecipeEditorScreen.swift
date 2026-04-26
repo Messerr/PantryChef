@@ -83,13 +83,23 @@ struct RecipeEditorScreen: View {
                     .onDelete { indexSet in
                         ingredientDrafts.remove(atOffsets: indexSet)
                     }
+                    .onMove { source, destination in
+                        ingredientDrafts.move(fromOffsets: source, toOffset: destination)
+                    }
                     
                     Button {
                         ingredientDrafts.append(IngredientDraft())
                     } label: {
                         Label("Add Ingredient", systemImage: "plus.circle")
                     }
-                } header: { Text("Ingredients") }
+                } header: {
+                    HStack {
+                        Text("Ingredients")
+                        Spacer()
+                        EditButton()
+                    }
+                    
+                }
                 
                 
                 Section {
@@ -132,6 +142,7 @@ struct RecipeEditorScreen: View {
             
             existingRecipe.ingredients.forEach { context.delete($0) }
             existingRecipe.steps.forEach { context.delete($0) }
+            try? context.save()
             existingRecipe.imageData = imageData
             
             for (i, draft) in ingredientDrafts.enumerated() {
